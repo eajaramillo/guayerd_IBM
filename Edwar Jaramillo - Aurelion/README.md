@@ -15,13 +15,13 @@ El objetivo principal de este proyecto es:
 
 El proyecto se basa en los siguientes archivos de Excel, que actúan como nuestra "base de datos":
 
-*   **`clientes.xlsx`**: [Mostrado en imagen] Contiene la información detallada de los clientes registrados en el marketplace.
+*   **`clientes.xlsx`**: Contiene la información detallada de los clientes registrados en el marketplace.
     *   **Columnas:** `id_cliente`, `nombre_cliente`, `email`, `ciudad`, `fecha_alta`.
-*   **`productos.xlsx`**: [Mostrado en imagen] Almacena los datos de los productos disponibles para la venta.
+*   **`productos.xlsx`**: Almacena los datos de los productos disponibles para la venta.
     *   **Columnas:** `id_producto`, `nombre_producto`, `categoria`, `precio_unitario`.
-*   **`ventas.xlsx`**: **[Mostrado en imagen] Contiene el resumen de cada transacción de venta realizada en el marketplace.**
+*   **`ventas.xlsx`**: **Contiene el resumen de cada transacción de venta realizada en el marketplace.**
     *   **Columnas:** `id_venta`, `fecha`, `id_cliente`, `nombre_cliente`, `email`, `medio_pago`.
-*   **`detalle_ventas.xlsx`**: [Mostrado en imagen] Registra los productos individuales que forman parte de cada venta, con sus cantidades y precios específicos.
+*   **`detalle_ventas.xlsx`**: Registra los productos individuales que forman parte de cada venta, con sus cantidades y precios específicos.
     *   **Columnas:** `id_venta`, `id_producto`, `nombre_producto`, `cantidad`, `precio_unitario`, `importe`.
 
 **Funcionalidades del proyecto:**
