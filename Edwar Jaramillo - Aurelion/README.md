@@ -49,7 +49,7 @@ El proyecto se basa en los siguientes archivos de Excel, que actúan como nuestr
 │   ├── productos.xlsx     # Catálogo de productos
 │   └── ventas.xlsx        # Resumen de cada transacción de venta
 └── requirements.txt       # Dependencias del proyecto
-
+```
 
 ## 🛠️ Tecnologías Utilizadas
 
