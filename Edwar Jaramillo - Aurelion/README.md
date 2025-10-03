@@ -27,9 +27,9 @@ El proyecto se basa en los siguientes archivos de Excel, que actúan como nuestr
 
 *Diagrama relacional base de datos*
 
-[Diagrama relacional base de datos online](https://dbdiagram.io/d/marketplace-Aurelion-68dfd194d2b621e4222671a0)
+![Diagrama relacional base de datos](database/marketplace-Aurelion-DB.png)
 
-<iframe width="720" height="500" src='https://dbdiagram.io/e/68dfd194d2b621e4222671a0/68dfeb31d2b621e4222ad3ca'> </iframe>
+[Diagrama relacional base de datos online](https://dbdiagram.io/d/marketplace-Aurelion-68dfd194d2b621e4222671a0)
 
 **Funcionalidades del proyecto:**
 
