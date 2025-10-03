@@ -25,7 +25,11 @@ El proyecto se basa en los siguientes archivos de Excel, que actúan como nuestr
 *   **`detalle_ventas.xlsx`**: Registra los productos individuales que forman parte de cada venta, con sus cantidades y precios específicos.
     *   **Columnas:** `id_venta`, `id_producto`, `nombre_producto`, `cantidad`, `precio_unitario`, `importe`.
 
-(Diagramación base de datos: [text](https://dbdiagram.io/d))
+*Diagrama relacional base de datos*
+
+![Diagrama relacional base de datos](database/marketplace-Aurelion-DB.png)
+
+[Diagrama relacional base de datos online](https://dbdiagram.io/d/marketplace-Aurelion-68dfd194d2b621e4222671a0)
 
 **Funcionalidades del proyecto:**
 
