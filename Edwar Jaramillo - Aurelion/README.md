@@ -34,19 +34,22 @@ El proyecto se basa en los siguientes archivos de Excel, que actúan como nuestr
 
 ## 📁 Estructura del Proyecto
 
+```text
+.
 ├── README.md
-├── main.py # Script principal con la lógica del marketplace
+├── main.py                # Script principal con la lógica del marketplace
 ├── src/
-│ ├── init.py
-│ ├── data_manager.py # Funciones para leer/escribir en los archivos Excel
-│ ├── models.py # Definición de estructuras de datos/clases (e.g., Producto, Cliente, Venta)
-│ └── utils.py # Funciones de utilidad auxiliares
+│   ├── __init__.py
+│   ├── data_manager.py    # Funciones para leer/escribir en los archivos Excel
+│   ├── models.py          # Definición de estructuras de datos/clases (e.g., Producto, Cliente, Venta)
+│   └── utils.py           # Funciones de utilidad auxiliares
 ├── data/
-│ ├── clientes.xlsx # Información detallada de clientes
-│ ├── detalle_ventas.xlsx# Detalles de cada producto en una venta
-│ ├── productos.xlsx # Catálogo de productos
-│ └── ventas.xlsx # Resumen de cada transacción de venta
-└── requirements.txt # Dependencias del proyecto
+│   ├── clientes.xlsx      # Información detallada de clientes
+│   ├── detalle_ventas.xlsx# Detalles de cada producto en una venta
+│   ├── productos.xlsx     # Catálogo de productos
+│   └── ventas.xlsx        # Resumen de cada transacción de venta
+└── requirements.txt       # Dependencias del proyecto
+
 
 ## 🛠️ Tecnologías Utilizadas
 
