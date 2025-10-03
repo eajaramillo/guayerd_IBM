@@ -101,19 +101,19 @@ El main.py probablemente centraliza la lógica principal del marketplace. A trav
 Ejemplo básico de cómo cargar datos en main.py usando data_manager.py:
 
 # En main.py
+```bash
 from src.data_manager import cargar_dataframe_excel
-
+```
 # Cargar los DataFrames al inicio
+```bash
 df_clientes = cargar_dataframe_excel('clientes.xlsx')
 df_productos = cargar_dataframe_excel('productos.xlsx')
 df_ventas = cargar_dataframe_excel('ventas.xlsx')
 df_detalle_ventas = cargar_dataframe_excel('detalle_ventas.xlsx')
 
 print("¡Todos los datos de tu marketplace han sido cargados exitosamente!")
+```
 # Ahora puedes operar con estos DataFrames para gestionar tu marketplace.
-
-
 
 Desarrollado por: Edwar Jaramillo
 Contacto: [Perfil github](https://github.com/eajaramillo)
-```
