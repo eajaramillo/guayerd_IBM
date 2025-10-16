@@ -194,3 +194,7 @@ Main (.py)
     * Se realizó una mejora añadiendo dos opciones de menú adicionales que corresponden a:
         * Opción de búsqueda: para localizar palabras clave dentro de la documentación (e.g., “tema”, “solución").
         * Opción de “exportar sección”: para guardar en .txt/.md lo mostrado por pantalla.
+
+**Desarrollado por: Edwar Jaramillo**
+**Contacto: [Perfil github](https://github.com/eajaramillo)**
+**Contacto: [Proyecto Aurelion](https://github.com/eajaramillo/guayerd_IBM/tree/main/Edwar%20Jaramillo%20-%20Aurelion)**
