@@ -183,12 +183,12 @@ Para ejecutar el programa se debe abrir por terminal el main.py o sí abre el ar
 *   **Power BI Desktop**: Creación de informes y `dashboards interactivos`.
 ___
 
-## 9. Sugerencias y mejoras aplicadas con Copilot
+## 9. Sugerencias y mejoras aplicadas con IA
 
 Main (.py)
 * Debe permitir obtener información del proyecto
 
-* **Sugerencias y mejoras aplicadas con Copilot**
+* **Sugerencias y mejoras aplicadas con IA**
     * Luego de realizar un prompt para mejorar el programa ejecutable, se realizar una separación de la documentación en un diccionario reutilizable y de cierta manera desacoplado.
 
     * Se realizó una mejora añadiendo dos opciones de menú adicionales que corresponden a:
