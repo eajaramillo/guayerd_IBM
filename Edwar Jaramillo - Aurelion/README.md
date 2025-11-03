@@ -1,9 +1,51 @@
+# 1. Documentación proyecto Aurelion
 ___
 
 ## 1. Tema
 **🛍️ Mi Minimarket - Proyecto de Estudio de IA y Análisis de Datos con Excel**
 
-Este proyecto Python es un entorno de estudio integral que simula la gestión de un minimarket. Se centra en la aplicación práctica de conceptos de Inteligencia Artificial y Machine Learning, utilizando librerías como `pandas` y `numpy` para la manipulación y análisis de datos almacenados en archivos Excel, y culminando en la visualización de insights mediante un dashboard en Power BI.
+Este proyecto Python es un entorno de estudio integral que simula la gestión de un minimarket. Se centra en la aplicación práctica de conceptos de Inteligencia Artificial y Machine Learning, utilizando librerías, tecnologías y conceptos como:
+
+**Tecnologías y librerías**
+```
+* Análisis estadístico
+* Tecnologías y librerías VSCode y plugins
+* Lenguaje Python
+* Pandas
+* numpy
+* openpyxl
+* streamlit
+* plotly
+* matplotlib
+* python-dateutil
+* Jupiter
+* PowerBI
+```
+
+**Conceptos**
+```
+* Limpieza de datos
+* Correlacionea
+* ETLs
+* Lectura de archivos
+* Estructuras principales
+* Inspección y limpieza
+* Estadística descriptiva básica
+* Distribuciones de datos
+* Correlaciones
+* Visualización - Matplotlib - Seaborn
+* Machine Learning
+* Tipos de aprendizajes
+* Algoritmos básicos
+* Métricas de evaluación
+* Preparación datos
+* División train/test
+* Proceso entrenamiento
+* Evaluación modelos
+* Algoritmos específicos
+```
+
+Con esta tecnoloigías y conceptos para la manipulación y análisis de datos almacenados en archivos Excel, se busca realizar estudios y encontrar datos concluyentes que puedan ser usados para exponer a las áreas gerenciales culminando en la visualización de insights mediante un dashboard en Power BI que permitan sustentar los hallazgos.
 
 ___
 
@@ -11,9 +53,19 @@ ___
 
 El objetivo principal de este proyecto es:
 *   **Dominar el ciclo de vida del análisis de datos:** Desde la limpieza y transformación de datos hasta el modelado de Machine Learning y la visualización de resultados.
-*   **Aplicar Python y librerías clave:** Utilizar `pandas` para gestión de datos, `numpy` para operaciones numéricas eficientes, y `scikit-learn` para implementar modelos de Machine Learning.
+*   **Aplicar Python y librerías clave:** Utilizar `pandas` para gestión de datos, `numpy` para operaciones numéricas eficientes, y `scikit-learn` para implementar modelos de Machine Learning. Adicionalmente incorporar todas las demás tecnologías descritos en el *[Tema](#tema)* de este proyecto
 *   **Generar insights accionables:** Obtener conclusiones significativas de los datos del marketplace y presentarlas de manera efectiva en un dashboard de Power BI.
 *   **Simular un entorno de marketplace:** Gestionar información de clientes, productos y transacciones de ventas con archivos Excel.
+
+
+### 🚀 OBJETIVO complementario
+
+* Construir una aplicación web en Streamlit que permita:
+* Consultar la documentación dinámica (Markdown).
+* Gestionar registros del minimarket (clientes, productos, ventas).
+* Analizar y limpiar los datasets.
+* Aplicar análisis estadístico y visualización interactiva.
+* Evolucionar a Machine Learning más adelante.
 
 ___
 
@@ -21,13 +73,13 @@ ___
 
 Se propone la elaboración de una **documentación detallada** y estructurada para para este proyecto de tal manera que describa los procesos, componentes y funcionalidades que se plasmarán en un programa ejecutable. Esta documentación servirá como base para el diseño, implementación y mantenimiento de futuras soluciones tecnológicas dentro de esta solución.
 
-Adicionalmente, se plantea la creación de un **programa** que permita visualizar la documentación desde un menú de **forma interactiva**, facilitando la consulta de la documentación completa el proyecto. Este sistema interactivo permitirá acceder a la información técnica de manera dinámica, organizada y actualizable; promoviendo la colaboración y mejora continua de los procesos tecnológicos del proyecto.
+Adicionalmente, se plantea la creación de un **programa** que permita visualizar la documentación desde un menú de **forma interactiva**, facilitando la consulta de la documentación completa el proyecto. Este sistema interactivo permitirá acceder a la información técnica de manera dinámica, organizada y actualizable; promoviendo la colaboración y mejora continua de los procesos tecnológicos del proyecto. Este programa interactivo también estará en la capacidad de ejecutar y mostrar en análisis, pasos y procesos que llevarán a la conclusión final luego del estudio de los datos analizados, mediante submenús intermedios que alimentando la base de datos y entregables para la solución definitiva.
 
 ___
 
 ## 4. Dataset de referencia: fuente, definición, estructura, tipos y escala de medición
 # 4.1 Fuente
-El proyecto se basa en los siguientes archivos de Excel, que actúan como nuestra "base de datos" para las distintas fases del análisis.
+El proyecto se basa en los siguientes archivos de Excel, que actúan como nuestra "base de datos" para las distintas fases del análisis. Esta base de datos contiene la información inicial de la muestra, sin embargo puede sufrir transformaciones luego de la limpieza de datos o inyección de nueva data para ampliar el rango de la muestra.
 
 # 4.2 Definición
 **Simular un entorno de marketplace:** Gestionar información de clientes, productos y transacciones de ventas con archivos Excel.
@@ -157,7 +209,7 @@ ___
 ## 8. Ejecutar el programa
 Para ejecutar el programa se debe abrir por terminal el main.py o sí abre el archivo desde visual studio code, se puede ejecutar directamente desde el play que viene con el ide.
 
-**📁 Estructura del Proyecto**
+**📁 Estructura del Proyecto V.1**
 
 ```text
 .
@@ -173,14 +225,53 @@ Para ejecutar el programa se debe abrir por terminal el main.py o sí abre el ar
 └── requirements.txt                    # Dependencias del proyecto
 ```
 
+**📁 Estructura del Proyecto V.2**
+```
+MiMinimarketApp/
+│
+├── app.py                            # Punto de entrada principal
+│
+├── database/                         # Datasets base
+│   ├── clientes.xlsx
+│   ├── productos.xlsx
+│   ├── ventas.xlsx
+│   ├── detalle_ventas.xlsx
+│
+├── modules/                          # Vistas modulares (principio de responsabilidad única)
+│   ├── documentacion_view.py         # Módulo Documentación
+│   ├── minimarket_view.py            # Módulo de registro de información
+│   ├── limpieza_view.py              # Limpieza y transformación de datos
+│   ├── estadisticas_view.py          # Análisis y visualización estadística
+│   └── utils/
+│       ├── data_loader.py            # Carga y guardado centralizado de datasets
+│       ├── data_cleaner.py           # Funciones reutilizables de limpieza
+│       └── plot_utils.py             # Funciones gráficas comunes
+│
+├── documentacion.md                  # Archivo dinámico del proyecto
+│
+└── requirements.txt
+
+```
+
 **🛠️ Tecnologías Utilizadas o a utilizar proximamente**
 
 *   **Python 3.x**
-*   **pandas**: Biblioteca esencial para la lectura, manipulación, análisis y escritura de datos tabulares en archivos Excel.
-*   **openpyxl**: Backend necesario para `pandas` para interactuar con archivos de Excel en formato `.xlsx`.
 *   **scikit-learn**: Implementación de algoritmos de `Machine Learning`.
-*   **Matplotlib y Seaborn**: `Visualización` de datos en Python.
 *   **Power BI Desktop**: Creación de informes y `dashboards interactivos`.
+
+| Librería          | Propósito                                                             |
+| ----------------- | --------------------------------------------------------------------- |
+| `streamlit`       | Crear la interfaz web interactiva del proyecto.                       |
+| `pandas`          | Manipulación y análisis de datos (lectura, limpieza, agregación). Biblioteca esencial para la lectura, manipulación, análisis y escritura de datos tabulares en archivos Excel.     |
+| `numpy`           | Operaciones matemáticas y numéricas.                                  |
+| `matplotlib`      | Gráficos base y visualizaciones básicas de datos en Python.                              |
+| `seaborn`         | Gráficos estadísticos avanzados (boxplot, heatmap, violinplot).       |
+| `openpyxl`        | Permite leer y escribir archivos `.xlsx` (Excel). Backend necesario para `pandas` para interactuar con archivos de Excel en formato `.xlsx`.                    |
+| `python-dateutil` | Manejo de fechas y tiempos (útil para las columnas tipo `timestamp`). |
+| `plotly`          | Gráficos interactivos opcionales (podrás usarlo en módulos futuros).  |
+| `scipy`           | Funciones estadísticas y científicas (para análisis más profundos).   |
+| `statsmodels`     | Análisis estadístico avanzado (para futuras clases de IA).            |
+
 ___
 
 ## 9. Sugerencias y mejoras aplicadas con IA
@@ -195,9 +286,242 @@ Main (.py)
         * Opción de búsqueda: para localizar palabras clave dentro de la documentación (e.g., “tema”, “solución").
         * Opción de “exportar sección”: para guardar en .txt/.md lo mostrado por pantalla.
 
+___
+
+# 2. Limpieza de datos
+
+En este proceso se realizará un análisis detallado de los datos y sus estructuras en el dataset, se elaborará un menú interactivo que permita revisar las tablas, permitir la modificación individual o masiva de los datos que requiere intervensión para realizar una mejor limpieza de los datos.
+___
+
+### 🚀 FASE 1: Configuración y exploración inicial**
+
+:one: Crear la estructura de carpetas (si aún no existe)
+:two: Instalar librerías necesarias
+
+**En la terminal**
+```
+pip install pandas numpy matplotlib seaborn plotly openpyxl jupyter scikit-learn python-dateutil
+
+```
+
+### Mi Minimarket: Análisis de datos inicial**
+
+#### 1. Carga de datos
+```
+clientes = pd.read_excel('database/clientes.xlsx')
+productos = pd.read_excel('database/productos.xlsx')
+ventas = pd.read_excel('database/ventas.xlsx')
+detalle = pd.read_excel('database/detalle_ventas.xlsx')
+```
+#### 2. Inspección rápida
+```
+print("Clientes:")
+display(clientes.head())
+
+print("\nProductos:")
+display(productos.head())
+
+print("\nVentas:")
+display(ventas.head())
+
+print("\nDetalle Ventas:")
+display(detalle.head())
+
+```
+
+### 🧹 FASE 2: Limpieza y Transformación (ETL con Pandas)
+**🎯 Objetivo**
+
+* Verificar la estructura, dataframes, tipos de datos, valores nulos y duplicados.
+* Estandarizar formatos (fechas, texto, numéricos).
+* Integrar las 4 tablas (clientes, productos, ventas, detalle_ventas) en una sola vista analítica.
+
+#### Limpieza de datos
+**mostrar_valores_faltantes(df)**
+* Detecta valores nulos, vacíos o con espacios.
+* Muestra las filas afectadas, permite elegir cómo tratarlas y aplicar la acción seleccionada.
+
+**mostrar_duplicados(df)**
+* Muestra los registros duplicados y permite decidir si eliminarlos o mantenerlos.
+
+**mostrar_inconsistencias(df)**
+* Permite detectar y corregir inconsistencias de formato, incluyendo texto, fechas y tipos.
+
+**Resumen de la limpieza**
+| Mejora                            | Descripción                                                      |
+| --------------------------------- | ---------------------------------------------------------------- |
+| **Vista previa**                  | Se muestran las filas afectadas antes de actuar.                 |
+| **Control selectivo**             | Puedes decidir si eliminar, rellenar o corregir.                 |
+| **Valores vacíos tratados**       | No solo nulos (`NaN`), también celdas vacías o con espacios.     |
+| **Normalización interactiva**     | Se seleccionan columnas específicas y se visualizan los cambios. |
+| **Conversión flexible de fechas** | Permite definir formato manualmente.                             |
+| **Prevención de errores**         | Cada acción valida y muestra resultados con mensajes claros.     |
+
+
+
+#### 3. Inspección de estructura
+```
+for nombre, df in [('Clientes', clientes), ('Productos', productos), ('Ventas', ventas), ('Detalle Ventas', detalle)]:
+    print(f"\n===== {nombre.upper()} =====")
+    print(df.info())
+    print(f"Duplicados: {df.duplicated().sum()}")
+    print(f"Valores nulos:\n{df.isnull().sum()}")
+
+```
+
+#### Recategorización de productos en el dataset
+
+Vamos a realizar un proceso profesional y controlado de recategorización de productos en el dataset productos, de modo que puedas detectar inconsistencias, analizarlas y corregirlas sin perder trazabilidad.
+
+**🔍 Qué observarás:**
+
+* Errores comunes: mayúsculas/minúsculas, tildes, espacios extra, nombres duplicados (ej: “Lácteos”, “lacteos”, “Lacteos”).
+
+* Productos mal ubicados o genéricos (ej: “Sin categoría”, “Otros”, “Default”).
+
+#### Análisis de categorías
+```
+print("Categorías únicas:")
+print(productos['categoria'].unique())
+
+print("\nConteo de productos por categoría:")
+display(productos['categoria'].value_counts())
+
+```
+
+#### Normalizar texto antes de recategorizar
+
+Conviene unificar el formato para que no existan variantes de texto:
+
+##### Limpieza de texto en categorías
+`productos['categoria'] = productos['categoria'].str.strip().str.title()`
+
+##### Correcciones básicas automáticas
+```
+productos['categoria'] = productos['categoria'].replace({
+    'Lacteos': 'Lácteos',
+    'Lacteo': 'Lácteos',
+    'Verdura': 'Verduras',
+    'Fruta': 'Frutas',
+    'Cereal': 'Cereales',
+    'Otros': 'Otros Productos',
+    'Alimento': 'Alimentos'
+})
+
+```
+
+#Bloque automatizado de sugerencias de recategorización
+
+#Este bloque agrupa los productos según coincidencias con palabras clave comunes y te muestra sugerencias para corregirlos.
+
+#### Sugerencias de recategorización automática
+
+**Diccionario de palabras clave → categoría sugerida**
+
+**Opción 1** - *Limitar categorías solo a 'Alimentos' y 'Limpieza'*
+
+```
+reglas_categoria = {
+    "Jugo|Bebida|Agua|Refresco|Gaseosa|Té|Energética|Mate|Pepsi|Cerveza|Avena|Vino|Ron|Whisky|Fernet": "Alimentos",
+    "Pan|Ponqué|Bizcocho|Panela|Mermelada|Manteca": "Alimentos",
+    "Yogur|Leche|Queso|Mantequilla": "Alimentos",
+    "Arroz|Frijol|Lenteja|Cereal": "Alimentos",
+    "Manzana|Banano|Naranja|Pera|Uva": "Alimentos",
+    "Tomate|Cebolla|Papa|Lechuga|Zanahoria|Verduras": "Alimentos",
+    "Detergente|Jabón|Limpiador|Desinfectante": "Limpieza",
+    "Galleta|Chocolate|Dulce|Confite|Alfajor|Maní|Turrón|Azúcar|Caramelo|Chupetín|Stevia|Pizza|Helado|Aceitunas|Caldo": "Alimentos"
+}
+
+```
+**Opción 2** - *Seperar en nuevas categorías más detalladas*
+```
+reglas_categoria = {
+    "Jugo|Bebida|Agua|Refresco|Gaseosa|Té|Energética|Mate|Pepsi|Cerveza|Avena|Vino|Ron|Whisky|Fernet|Cola|Sprite|Licor|Vodka": "Bebidas",
+    "Manzana|Banano|Naranja|Pera|Uva": "Bebidas",
+    "Pan|Ponqué|Bizcocho|Panela|Mermelada|Manteca": "Panadería",
+    "Yogur|Leche|Queso|Mantequilla": "Lácteos",
+    "Arroz|Frijol|Lenteja|Cereal|Frutos secos|Garbanzos|Granola": "Granos y Cereales",
+    "Tomate|Cebolla|Papa|Lechuga|Zanahoria|Verduras": "Verduras",
+    "Detergente|Jabón|Limpiador|Desinfectante|Lacandina|Shampoo|Servilletas|Cepillo|Mascarilla|Limpiavidrios|Esponjas|Desodorante": "Limpieza",
+    "Galleta|Chocolate|Dulce|Confite|Alfajor|Maní|Turrón|Azúcar|Caramelo|Chupetín|Stevia|Pizza|Helado|Aceitunas|Galletitas|Chicle Menta": "Snacks y Dulces"
+}
+
+```
+
+#### Buscar productos candidatos para recategorización
+```
+sugerencias = []
+
+for patron, categoria_sugerida in reglas_categoria.items():
+    mask = productos['nombre_producto'].str.contains(patron, case=False, na=False)
+    df_sugerido = productos.loc[mask & (productos['categoria'] != categoria_sugerida), 
+                                ['id_producto', 'nombre_producto', 'categoria']]
+    if not df_sugerido.empty:
+        df_sugerido['categoria_sugerida'] = categoria_sugerida
+        sugerencias.append(df_sugerido)
+
+```
+#### Concatenar resultados
+```
+if sugerencias:
+    sugerencias_df = pd.concat(sugerencias, ignore_index=True)
+    print("🔍 Productos potencialmente mal categorizados (según palabra clave):")
+    display(sugerencias_df)
+else:
+    print("✅ No se detectaron productos fuera de su categoría esperada.")
+
+```
+
+#### Aplicar todas las sugerencias automáticamente
+Si revisaste sugerencias_df y estás de acuerdo con todas las correcciones sugeridas:
+
+#### Aplicar todas las sugerencias automáticamente
+```
+for _, fila in sugerencias_df.iterrows():
+    productos.loc[productos['id_producto'] == fila['id_producto'], 'categoria'] = fila['categoria_sugerida']
+
+```	
+#### Verificar los cambios
+
+Después de hacer tus correcciones:
+
+```
+print("Categorías finales actualizadas:")
+display(productos['categoria'].value_counts())
+
+```
+#### Opcional: vista previa por categoría
+```
+for cat in productos['categoria'].unique():
+    subset = productos[productos['categoria'] == cat].head(20)
+    print(f"\n{cat}:")
+    display(subset[['id_producto', 'nombre_producto']])
+
+```
+**Revisión y recategorización de productos**
+
+| Sección                            | Funcionalidad                                                                     |
+| ---------------------------------- | --------------------------------------------------------------------------------- |
+| **Vista previa**                   | Tabla de productos ordenable y paginada.                                          |
+| **Análisis de categorías**         | Lista única y conteo por categoría.                                               |
+| **Normalización automática**       | Aplica reglas de texto con conteo de cambios.                                     |
+| **Reglas interactivas**            | Permite editar el diccionario de recategorización directamente desde la interfaz. |
+| **Búsqueda automática**            | Encuentra productos con categoría incorrecta según patrones.                      |
+| **Tabla ordenable de sugerencias** | Vista paginada con productos a corregir.                                          |
+| **Confirmación y guardado**        | Aplica los cambios al dataset en memoria (se reflejarán globalmente).             |
+| **Resumen final**                  | Conteo por categoría y ejemplos de productos actualizados.                        |
+
+___
+# Información del autor del proyecto
+
 **Desarrollado por: Edwar Jaramillo**
 **Contacto: [Perfil github](https://github.com/eajaramillo)**
 **Contacto: [Proyecto Aurelion](https://github.com/eajaramillo/guayerd_IBM/tree/main/Edwar%20Jaramillo%20-%20Aurelion)**
+
+**Recursos de markdows útiles**
+Markdown: [Sintaxis de escritura y formato básicos](https://docs.github.com/es/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
+Iconos: [Complete list of github markdown emoji markup](https://gist.github.com/rxaviers/7360908)
+
 ```
 (Versión README para Github)
 
