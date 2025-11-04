@@ -24,4 +24,4 @@ elif menu == "🧹 Limpieza y transformación":
     else:
         st.warning("⚠️ No hay datasets cargados en memoria. Ve primero al módulo 'Mi Minimarket'.")
 elif menu == "📊 Análisis estadístico y visualización":
-    estadisticas_view.mostrar_estadisticas()
+    estadisticas_view.mostrar_estadisticas(st.session_state["datasets"])

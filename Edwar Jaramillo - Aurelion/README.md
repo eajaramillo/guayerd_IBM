@@ -512,6 +512,32 @@ for cat in productos['categoria'].unique():
 | **Resumen final**                  | Conteo por categoría y ejemplos de productos actualizados.                        |
 
 ___
+### Análisis estadístico del dataset de ventas
+
+**Distribución de precios**
+La variable `precio_unitario` sigue una distribución sesgada a la derecha (asimetría positiva).
+
+**Correlaciones relevantes**
+Existe una correlación negativa (-0.65) entre precio y cantidad, lo cual indica...
+
+**Detección de outliers**
+Se identificaron 4 productos con precios fuera del rango intercuartílico (IQR).
+
+**Conclusiones**
+El análisis muestra que las categorías “Bebidas” y “Snacks y Dulces” concentran la mayor parte del volumen de ventas.
+
+**Qué se encuentra en este módulo?**
+
+| Funcionalidad               | Qué hace                              | Gráfico               |
+| --------------------------- | ------------------------------------- | --------------------- |
+| **Estadística descriptiva** | Calcula medidas básicas e histograma  | `histplot`            |
+| **Medidas de posición**     | Cuartiles, rango y boxplot            | `boxplot`             |
+| **Correlaciones**           | Correlaciones y dispersión            | `heatmap` + `scatter` |
+| **Confiabilidad**           | Coeficiente de variación (CV)         | `histplot`            |
+| **Visualizaciones**         | Boxplot, violinplot, heatmap dinámico | `seaborn`             |
+
+
+___
 # Información del autor del proyecto
 
 **Desarrollado por: Edwar Jaramillo**

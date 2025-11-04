@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 from modules import limpieza_view
-
+from modules import estadisticas_view
 
 # ============================================================
 # UTILIDADES DE CARGA Y GUARDADO
@@ -99,7 +99,8 @@ def mostrar_minimarket():
 
     dfs = st.session_state.datasets
 
-    tabs_menu = st.tabs(["📝 Registro de datos", "📂 Cargar dataset", "🧹 Limpieza de datos"])
+    tabs_menu = st.tabs(["📝 Registro de datos", "📂 Cargar dataset", "🧹 Limpieza de datos", "📈 Análisis Estadístico"])
+
 
     # ============================================================
     # 📝 Pestaña 1 - REGISTRO DE DATOS
@@ -237,3 +238,5 @@ def mostrar_minimarket():
         st.header("🧹 Limpieza y transformación de datos")
         st.markdown("Analiza, explora y limpia los datos cargados actualmente en memoria.")
         limpieza_view.mostrar_limpieza_datos(st.session_state.datasets)
+    with tabs_menu[3]:
+        estadisticas_view.mostrar_estadisticas(st.session_state.datasets)
