@@ -127,55 +127,62 @@ def mostrar_reportes(datasets):
 
     # === Correlaciones globales ===
     with tabs[4]:
+        import plotly.express as px
+
         st.subheader("📈 Correlaciones entre variables numéricas")
 
         # Calcular matriz de correlaciones
         corr = maestra.corr(numeric_only=True)
 
-        # --- Limpieza: eliminar columnas constantes o con NaN ---
+        # --- Limpiar variables no informativas ---
         corr = corr.dropna(how="all", axis=0).dropna(how="all", axis=1)
-
-        # --- Ajustes visuales ---
-        fig, ax = plt.subplots(figsize=(10, 6))  # tamaño más amplio
-        mask = np.triu(np.ones_like(corr, dtype=bool))  # muestra solo la mitad inferior
-        cmap = sns.diverging_palette(230, 20, as_cmap=True)
-
-        sns.heatmap(
-            corr,
-            mask=mask,
-            cmap=cmap,
-            center=0,
-            annot=True,
-            fmt=".2f",
-            annot_kws={"size": 8},
-            linewidths=0.5,
-            cbar_kws={"shrink": 0.8, "label": "Coeficiente de correlación"},
-            ax=ax
-        )
-
-        ax.set_title("Matriz de correlación entre variables numéricas", fontsize=12, pad=10)
-        plt.xticks(rotation=45, ha="right", fontsize=8)
-        plt.yticks(fontsize=8)
-
-        st.pyplot(fig)
-
-        # --- Interpretación automática ---
-        st.markdown("### 🧠 Interpretación automática")
-        top_corrs = (
-            corr.unstack()
-            .reset_index()
-            .rename(columns={"level_0": "Variable A", "level_1": "Variable B", 0: "Correlación"})
-        )
-        top_corrs = top_corrs[
-            (top_corrs["Variable A"] != top_corrs["Variable B"]) & (abs(top_corrs["Correlación"]) > 0.6)
-        ].sort_values("Correlación", ascending=False).drop_duplicates(subset=["Correlación"])
-
-        if not top_corrs.empty:
-            st.write("Variables con **alta correlación** (>|0.6|):")
-            st.dataframe(top_corrs.head(10), use_container_width=True)
-            st.info(
-                "📊 Valores cercanos a **+1** indican relación directa fuerte (ambas aumentan juntas). "
-                "Valores cercanos a **-1** indican relación inversa (una sube, la otra baja)."
-            )
+        if corr.empty:
+            st.warning("⚠️ No hay variables numéricas suficientes para calcular correlaciones.")
         else:
-            st.info("✅ No se detectaron correlaciones fuertes (> 0.6 o < -0.6) entre variables.")
+            # --- Filtro por umbral de correlación ---
+            umbral = st.slider("Umbral mínimo de correlación a mostrar", 0.0, 1.0, 0.6, 0.05)
+            mask = corr.abs() >= umbral
+            corr_filtrado = corr.where(mask)
+
+            # --- Heatmap interactivo con Plotly ---
+            fig = px.imshow(
+                corr_filtrado,
+                text_auto=True,
+                aspect="auto",
+                color_continuous_scale="RdBu_r",
+                origin="lower",
+                zmin=-1,
+                zmax=1,
+                labels=dict(color="Coeficiente de correlación"),
+                title=f"Matriz de correlación (|r| ≥ {umbral})"
+            )
+            fig.update_layout(
+                width=950,
+                height=700,
+                margin=dict(l=60, r=30, t=50, b=30),
+                coloraxis_colorbar=dict(title="Correlación", len=0.75),
+                font=dict(size=10)
+            )
+            st.plotly_chart(fig, use_container_width=True)
+
+            # --- Tabla de correlaciones significativas ---
+            st.markdown("### 🧮 Correlaciones más significativas")
+            top_corrs = (
+                corr.unstack()
+                .reset_index()
+                .rename(columns={"level_0": "Variable A", "level_1": "Variable B", 0: "Correlación"})
+            )
+
+            top_corrs = top_corrs[
+                (top_corrs["Variable A"] != top_corrs["Variable B"]) &
+                (abs(top_corrs["Correlación"]) >= umbral)
+            ].sort_values("Correlación", ascending=False).drop_duplicates(subset=["Variable A", "Variable B"])
+
+            if not top_corrs.empty:
+                st.dataframe(top_corrs.head(15), use_container_width=True)
+                st.info(
+                    "📊 Los valores cercanos a **+1** indican relación directa fuerte (ambas aumentan juntas), "
+                    "mientras que valores cercanos a **-1** indican relación inversa (una sube, la otra baja)."
+                )
+            else:
+                st.info(f"✅ No se detectaron correlaciones fuertes con |r| ≥ {umbral}.")
