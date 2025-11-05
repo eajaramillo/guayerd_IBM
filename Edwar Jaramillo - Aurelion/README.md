@@ -627,6 +627,21 @@ Fase gerencial / de inteligencia de negocio, dashboard ejecutivo interactivo �
 Cada gráfico incluye un insight contextual generado automáticamente
 (ejemplo: “El producto más vendido es X”, “El mes más fuerte fue julio…”).
 
+| Categoría     | Acción                                                                           | Resultado                                             |
+| ------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| 🗓️ Temporal  | Detecta automáticamente una columna de fecha (`fecha_venta`, `fecha_alta`, etc.) | Crea columnas `año`, `mes`, `mes_texto`, `trimestre`  |
+| 🧍 Cliente    | Calcula total de ventas por cliente                                              | Añade `total_cliente` y `% de participación`          |
+| 🏷️ Categoría | Calcula total de ventas por categoría                                            | Añade `total_categoria` y `% de participación global` |
+| 📦 Producto   | Calcula total de ventas por producto                                             | Añade `total_producto`                                |
+| 🧾 Venta      | Calcula ticket promedio por venta                                                | Añade `ticket_venta`                                  |
+
+#### 💡 Ejemplo del resultado
+
+Después de crear la tabla maestra, ahora tendrás automáticamente columnas como:
+id_venta | id_cliente | nombre_cliente | nombre_producto | categoria | cantidad | precio_unitario | importe_total | año | mes | mes_texto | trimestre | total_cliente | participacion_cliente_% | total_categoria | participacion_categoria_% | total_producto | ticket_venta
+
+
+
 ___
 # Información del autor del proyecto
 

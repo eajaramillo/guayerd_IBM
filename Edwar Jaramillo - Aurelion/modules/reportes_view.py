@@ -128,9 +128,54 @@ def mostrar_reportes(datasets):
     # === Correlaciones globales ===
     with tabs[4]:
         st.subheader("📈 Correlaciones entre variables numéricas")
+
+        # Calcular matriz de correlaciones
         corr = maestra.corr(numeric_only=True)
-        fig, ax = plt.subplots(figsize=(6, 4))
-        sns.heatmap(corr, annot=True, cmap="coolwarm", center=0, ax=ax)
+
+        # --- Limpieza: eliminar columnas constantes o con NaN ---
+        corr = corr.dropna(how="all", axis=0).dropna(how="all", axis=1)
+
+        # --- Ajustes visuales ---
+        fig, ax = plt.subplots(figsize=(10, 6))  # tamaño más amplio
+        mask = np.triu(np.ones_like(corr, dtype=bool))  # muestra solo la mitad inferior
+        cmap = sns.diverging_palette(230, 20, as_cmap=True)
+
+        sns.heatmap(
+            corr,
+            mask=mask,
+            cmap=cmap,
+            center=0,
+            annot=True,
+            fmt=".2f",
+            annot_kws={"size": 8},
+            linewidths=0.5,
+            cbar_kws={"shrink": 0.8, "label": "Coeficiente de correlación"},
+            ax=ax
+        )
+
+        ax.set_title("Matriz de correlación entre variables numéricas", fontsize=12, pad=10)
+        plt.xticks(rotation=45, ha="right", fontsize=8)
+        plt.yticks(fontsize=8)
+
         st.pyplot(fig)
 
-        st.markdown("🧠 **Insight:** Este mapa de calor muestra cómo se relacionan las métricas numéricas entre sí, permitiendo detectar factores que influyen en las ventas.")
+        # --- Interpretación automática ---
+        st.markdown("### 🧠 Interpretación automática")
+        top_corrs = (
+            corr.unstack()
+            .reset_index()
+            .rename(columns={"level_0": "Variable A", "level_1": "Variable B", 0: "Correlación"})
+        )
+        top_corrs = top_corrs[
+            (top_corrs["Variable A"] != top_corrs["Variable B"]) & (abs(top_corrs["Correlación"]) > 0.6)
+        ].sort_values("Correlación", ascending=False).drop_duplicates(subset=["Correlación"])
+
+        if not top_corrs.empty:
+            st.write("Variables con **alta correlación** (>|0.6|):")
+            st.dataframe(top_corrs.head(10), use_container_width=True)
+            st.info(
+                "📊 Valores cercanos a **+1** indican relación directa fuerte (ambas aumentan juntas). "
+                "Valores cercanos a **-1** indican relación inversa (una sube, la otra baja)."
+            )
+        else:
+            st.info("✅ No se detectaron correlaciones fuertes (> 0.6 o < -0.6) entre variables.")
