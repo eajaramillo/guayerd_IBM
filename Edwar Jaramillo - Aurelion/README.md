@@ -538,6 +538,96 @@ El análisis muestra que las categorías “Bebidas” y “Snacks y Dulces” c
 
 
 ___
+
+# 3. Análisis Estadístico y Visualización de Datos
+
+Fase avanzada de análisis analítico y de negocio, donde buscamos una visión 360° del dataset, integrando ventas, productos, clientes y detalle de ventas.
+
+Lo que estás describiendo es lo que en BI y Data Science llamamos un “Data Mart de Ventas” o “tabla maestra analítica”, la base para análisis estadísticos, dashboards y modelos predictivos.
+
+**🎯 Objetivo**
+
+Crear una tabla analítica unificada (o vista maestra virtual) que consolide todos los datos relevantes en una sola estructura sin perder la integridad entre relaciones, para poder:
+
+* Analizar ventas globales, por producto, cliente, categoría, etc.
+* Generar métricas derivadas (importe total, promedio por cliente, ticket medio, etc.).
+* Calcular correlaciones entre variables de distintas tablas.
+* Usar herramientas de visualización o IA sin necesidad de hacer joins manuales cada vez.
+
+### 🧠 Qué podrás analizar desde la tabla maestra
+#### 📊 Análisis cuantitativo
+
+* Importe total por cliente: agrupa c`liente → sum(importe_total)`.
+* Ticket promedio por compra: promedio de `importe_total por id_venta`.
+* Productos más vendidos: agrupa `nombre_producto → sum(cantidad)`.
+* Categorías más rentables: agrupa `categoria → sum(importe_total)`.
+* Ciudades con más ventas: agrupa `ciudad → sum(importe_total)`.
+
+#### 📅 Análisis temporal
+
+* Si tienes fecha de venta (fecha_venta), podrás:
+* Ventas por mes, trimestre o año.
+* Comparativas de crecimiento.
+* Detección de estacionalidad (gráficos de línea o barras).
+
+#### 👥 Análisis demográfico (en el futuro)
+
+* Si agregas columnas como `género, edad, ciudad`, podrás:
+* Comparar comportamiento por género o edad.
+* Ver qué grupos compran más por categoría.
+* Identificar clientes frecuentes o nuevos.
+
+#### 🔗 Correlaciones globales
+
+* `cantidad ↔ precio_unitario` → Elasticidad de demanda.
+* `importe_total ↔ categoria` → Qué categorías generan más valor.
+* `cliente ↔ ciudad` → Concentración geográfica.
+
+#### 📈 Visualizaciones útiles con la tabla maestra
+| Análisis                          | Gráfico sugerido                          | Librería         |
+| --------------------------------- | ----------------------------------------- | ---------------- |
+| Ventas por categoría              | `sns.barplot` o `plotly.express.bar`      | Seaborn / Plotly |
+| Productos top                     | `sns.barplot` ordenado por cantidad total | Seaborn          |
+| Distribución de importes          | `sns.histplot`                            | Seaborn          |
+| Relación cantidad vs precio       | `sns.scatterplot`                         | Seaborn          |
+| Heatmap de correlaciones globales | `sns.heatmap`                             | Seaborn          |
+
+#### 💡 Ejemplo de análisis posible desde la "tabla_maestra"
+* Una vez seleccionada en el menú:
+* Top 10 productos más vendidos: nombre_producto vs cantidad
+* Ventas por categoría: categoria vs importe_total
+* Clientes con más compras: nombre_cliente vs importe_total
+* Correlación cantidad-precio: analiza elasticidad de demanda
+* Ventas por ciudad o mes: ciudad vs importe_total, o usando la fecha de venta
+* Variabilidad del ticket promedio: usa el coeficiente de variación
+
+___
+
+# 4. Reportes
+
+Fase gerencial / de inteligencia de negocio, dashboard ejecutivo interactivo 📊
+
+**Este nuevo módulo se llama reportes_view.py y estará enfocado en:**
+* Mostrar indicadores clave (KPIs) calculados en tiempo real.
+* Generar gráficos estratégicos (ventas por producto, cliente, categoría, mes, etc.).
+* Ofrecer interpretaciones automáticas para apoyar la toma de decisiones.
+
+#### ✅ Qué incluye este módulo
+| Sección                    | Funcionalidad                                                         | Valor para negocio                       |
+| -------------------------- | --------------------------------------------------------------------- | ---------------------------------------- |
+| **KPIs principales**       | Muestra ventas totales, clientes, ticket promedio, productos vendidos | Da una visión rápida de desempeño        |
+| **Top productos**          | Ranking de ventas por cantidad                                        | Identifica productos estrella            |
+| **Categorías rentables**   | Ranking por valor total                                               | Detecta líneas de negocio más valiosas   |
+| **Top clientes**           | Ranking por cliente                                                   | Identifica compradores clave             |
+| **Ventas por mes**         | Línea de tendencia temporal                                           | Revela estacionalidad o picos de demanda |
+| **Correlaciones globales** | Mapa de calor                                                         | Muestra qué factores afectan las ventas  |
+
+#### 🧠 Interpretaciones automáticas
+
+Cada gráfico incluye un insight contextual generado automáticamente
+(ejemplo: “El producto más vendido es X”, “El mes más fuerte fue julio…”).
+
+___
 # Información del autor del proyecto
 
 **Desarrollado por: Edwar Jaramillo**

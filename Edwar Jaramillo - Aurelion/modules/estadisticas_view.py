@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+from modules.utils.data_master import construir_tabla_maestra
 
 sns.set(style="whitegrid")
 
@@ -211,14 +212,30 @@ def mostrar_estadisticas(datasets):
         st.warning("⚠️ No hay datasets cargados en memoria.")
         return
 
+    # ===============================================================
+    # Construir y agregar la tabla maestra al selector
+    # ===============================================================
+    tabla_maestra = construir_tabla_maestra(datasets, mostrar_mensajes=False)
+
+    # Crear copia del diccionario de datasets y añadir la tabla maestra si existe
+    datasets_para_analisis = dict(datasets)
+    if not tabla_maestra.empty:
+        datasets_para_analisis["tabla_maestra"] = tabla_maestra
+
+    # ===============================================================
+    # Selector de tabla para análisis
+    # ===============================================================
     tabla_seleccionada = st.selectbox(
         "Selecciona la tabla para analizar:",
-        list(datasets.keys())
+        list(datasets_para_analisis.keys())
     )
-    df = datasets[tabla_seleccionada]
+    df = datasets_para_analisis[tabla_seleccionada]
 
     st.markdown(f"### Analizando tabla: `{tabla_seleccionada}`")
 
+    # ===============================================================
+    # Pestañas de análisis
+    # ===============================================================
     tabs = st.tabs([
         "Estadística descriptiva",
         "Medidas de posición",
