@@ -1,20 +1,18 @@
-"""
 # 1️⃣ Verifica que estés en la carpeta del proyecto
-cd MiMinimarketApp
+#cd MiMinimarketApp
 
 # 2️⃣ Crea el entorno virtual
-python -m venv venv
+#python -m venv venv
 
 # 3️⃣ Activa el entorno virtual
 # En Windows:
-venv\Scripts\activate
+#venv\Scripts\activate
 
 # 4️⃣ Instala las librerías del proyecto
-pip install -r requirements.txt
+#pip install -r requirements.txt
 
 # 5️⃣ Ejecuta la aplicación web
-streamlit run app.py
-"""
+#streamlit run app.py
 
 # Dependencias base para MiMinimarketApp
 streamlit==1.50.0
@@ -30,8 +28,8 @@ plotly==6.3.1
 scipy==1.16.2
 statsmodels==0.14.5
 
-charset-normalizer        3.4.4
-jupyter_client            8.6.3
-jupyter_core              5.8.1
-matplotlib-inline         0.1.7
-scikit-learn              1.7.2
+#charset-normalizer        3.4.4
+#jupyter_client            8.6.3
+#jupyter_core              5.8.1
+#matplotlib-inline         0.1.7
+#scikit-learn              1.7.2
