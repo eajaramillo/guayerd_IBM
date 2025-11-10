@@ -1,0 +1,28 @@
+# Archivos de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Directorios y archivos del entorno virtual
+venv/
+.venv/
+env/
+
+# Archivos de credenciales y configuración local
+.env
+config.ini
+local_settings.py
+
+# Archivos de build y distribución
+build/
+dist/
+*.egg-info/
+
+# Archivos de configuración de IDEs y sistemas operativos
+.vscode/
+.idea/
+.DS_Store
+
+#Archivos temporales Aurelion
+db_limpia/
