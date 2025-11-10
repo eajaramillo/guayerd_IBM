@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+import plotly.express as px
 import numpy as np
 from modules.utils.data_master import construir_tabla_maestra
 
@@ -134,24 +135,90 @@ def mostrar_correlaciones(df):
         st.warning("⚠️ Se necesitan al menos dos columnas numéricas.")
         return
 
-    x_var = st.selectbox("Variable 1 (X):", numeric_cols,key="corr_x")
-    y_var = st.selectbox("Variable 2 (Y):", numeric_cols, index=1, key="corr_y")
+    # ==============================
+    # 🔹 CORRELACIÓN ENTRE DOS VARIABLES
+    # ==============================
+    st.markdown("### 🔸 Correlación entre dos variables específicas")
+    col1, col2 = st.columns(2)
+    with col1:
+        x_var = st.selectbox("Variable X:", numeric_cols, key="corr_x")
+    with col2:
+        y_var = st.selectbox("Variable Y:", numeric_cols, index=1, key="corr_y")
 
     corr = df[[x_var, y_var]].corr().iloc[0, 1]
-    st.write(f"**Coeficiente de correlación (r):** {corr:.3f}")
+    st.write(f"**Coeficiente de correlación (r):** `{corr:.3f}`")
 
+    # Gráfico de dispersión
     fig, ax = plt.subplots()
-    sns.scatterplot(data=df, x=x_var, y=y_var, ax=ax)
+    sns.scatterplot(data=df, x=x_var, y=y_var, ax=ax, alpha=0.7)
     ax.set_title(f"Dispersión entre {x_var} y {y_var}")
     st.pyplot(fig)
 
-    fig2, ax2 = plt.subplots(figsize=(6, 4))
-    sns.heatmap(df.corr(numeric_only=True), annot=True, cmap="coolwarm", center=0, ax=ax2)
-    st.pyplot(fig2)
-
-    # 🧠 Interpretación automática
+    # Interpretación automática
     st.markdown(f"🧠 **Interpretación automática:** {interpretar_correlacion(corr)}")
 
+    st.divider()
+
+    # ==============================
+    # 🔹 MATRIZ DE CORRELACIONES GLOBAL
+    # ==============================
+    st.markdown("### 🌐 Matriz global de correlaciones")
+
+    # --- Slider para filtrar correlaciones ---
+    umbral = st.slider("Umbral mínimo de correlación a mostrar (|r| ≥ ...)", 0.0, 1.0, 0.5, 0.05)
+
+    corr_matrix = df.corr(numeric_only=True)
+
+    # --- Enmascarar correlaciones débiles ---
+    mask = corr_matrix.abs() >= umbral
+    corr_filtrado = corr_matrix.where(mask)
+
+    # --- Gráfico interactivo con Plotly ---
+    fig2 = px.imshow(
+        corr_filtrado,
+        text_auto=True,
+        aspect="auto",
+        color_continuous_scale="RdBu_r",
+        origin="lower",
+        zmin=-1,
+        zmax=1,
+        labels=dict(color="Coeficiente de correlación"),
+        title=f"Matriz de correlación (|r| ≥ {umbral})"
+    )
+
+    fig2.update_layout(
+        width=900,
+        height=700,
+        margin=dict(l=60, r=30, t=50, b=30),
+        coloraxis_colorbar=dict(title="Correlación", len=0.75),
+        font=dict(size=10)
+    )
+
+    st.plotly_chart(fig2, use_container_width=True)
+
+    # ==============================
+    # 🔹 TABLA DE CORRELACIONES FUERTES
+    # ==============================
+    st.markdown("### 🧮 Correlaciones más significativas")
+
+    top_corrs = (
+        corr_matrix.unstack()
+        .reset_index()
+        .rename(columns={"level_0": "Variable A", "level_1": "Variable B", 0: "Correlación"})
+    )
+    top_corrs = top_corrs[
+        (top_corrs["Variable A"] != top_corrs["Variable B"]) &
+        (abs(top_corrs["Correlación"]) >= umbral)
+    ].sort_values("Correlación", ascending=False).drop_duplicates(subset=["Variable A", "Variable B"])
+
+    if not top_corrs.empty:
+        st.dataframe(top_corrs.head(15), use_container_width=True)
+        st.info(
+            "📊 Valores cercanos a **+1** indican relación directa fuerte (ambas aumentan juntas).  \n"
+            "Valores cercanos a **-1** indican relación inversa (una sube, la otra baja)."
+        )
+    else:
+        st.info(f"✅ No se detectaron correlaciones con |r| ≥ {umbral}.")
 
 def mostrar_confiabilidad(df):
     st.subheader("🧭 Evaluación de confiabilidad")
