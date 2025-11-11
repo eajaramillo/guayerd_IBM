@@ -739,14 +739,14 @@ def mostrar_limpieza_datos(datasets):
     st.title("🧹 Módulo de Limpieza y Transformación de Datos")
 
     tabs = st.tabs([
-        "Exploración general",
-        "Valores faltantes",
+        "Exploración\n\ngeneral",
+        "Valores\n\nfaltantes",
         "Duplicados",
         "Inconsistencias",
-        "Valores atípicos",
+        "Valores\n\natípicos",
         "Transformaciones",
-        "Revisión de categorías de productos",
-        "Guardar cambios en base de datos"
+        "Revisión de categorías\n\nde productos",
+        "Guardar cambios\n\nen base de datos"
     ])
 
     # 1️⃣ Exploración general
