@@ -175,29 +175,209 @@ def mostrar_confiabilidad(df):
 def mostrar_visualizaciones(df):
     st.subheader("📉 Visualizaciones estadísticas")
 
-    tipo = st.selectbox("Selecciona tipo de gráfico:", ["Boxplot", "Heatmap", "Violinplot"],key="vis_tipo")
+    tipo = st.selectbox("Selecciona tipo de gráfico:", ["Boxplot", "Heatmap", "Violinplot", "Histograma"],key="vis_tipo")
     numeric_cols = df.select_dtypes(include=[np.number]).columns
     cat_cols = df.select_dtypes(include=["object"]).columns
+    
+    if df.empty or len(numeric_cols) == 0:
+        st.warning("⚠️ No hay columnas numéricas disponibles para graficar.")
+        return
+    
+    # --------------------------------------------------
+    # OPCIONES DE CONFIGURACIÓN GENERAL
+    # --------------------------------------------------
+    st.markdown("### ⚙️ Opciones de visualización")
+    rotar_labels = st.checkbox("Rotar etiquetas del eje X", value=True)
+    ajustar_ancho = st.slider("Ajustar ancho del gráfico:", 6, 20, 10)
+    ordenar_por_media = st.checkbox("Ordenar categorías por valor promedio (solo aplica a boxplot/violinplot)", value=False)
+    
+    fig, ax = plt.subplots(figsize=(ajustar_ancho, 6))
 
-    fig, ax = plt.subplots(figsize=(8, 5))
-
+    # --------------------------------------------------
+    # 📦 BOX PLOT
+    # --------------------------------------------------
     if tipo == "Boxplot":
-        x = st.selectbox("Eje X (categoría):", cat_cols, key="vis_x")
-        y = st.selectbox("Eje Y (numérico):", numeric_cols, key="vis_y")
-        sns.boxplot(data=df, x=x, y=y, ax=ax)
-        st.markdown("🧠 **Interpretación:** El boxplot permite identificar asimetrías y outliers en la distribución por categoría.")
+        x = st.selectbox("Eje X (categoría):", cat_cols, key="vis_x_box")
+        y = st.selectbox("Eje Y (numérico):", numeric_cols, key="vis_y_box")
 
-    elif tipo == "Heatmap":
-        sns.heatmap(df.corr(numeric_only=True), annot=True, cmap="coolwarm", ax=ax)
-        st.markdown("🧠 **Interpretación:** El mapa de calor muestra correlaciones fuertes o débiles entre variables numéricas.")
+        data_plot = df.copy()
+        if ordenar_por_media and x in cat_cols:
+            orden = data_plot.groupby(x)[y].mean().sort_values().index
+        else:
+            orden = None
 
+        sns.boxplot(data=data_plot, x=x, y=y, order=orden, ax=ax)
+        if rotar_labels:
+            ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
+        st.markdown("🧠 **Interpretación:** El boxplot permite identificar asimetrías, concentraciones y outliers por categoría.")
+
+    # --------------------------------------------------
+    # 🎻 VIOLIN PLOT
+    # --------------------------------------------------
     elif tipo == "Violinplot":
-        x = st.selectbox("Eje X (categoría):", cat_cols)
-        y = st.selectbox("Eje Y (numérico):", numeric_cols)
-        sns.violinplot(data=df, x=x, y=y, ax=ax)
-        st.markdown("🧠 **Interpretación:** El violínplot combina boxplot y densidad, mostrando la forma completa de la distribución.")
+        x = st.selectbox("Eje X (categoría):", cat_cols, key="vis_x_violin")
+        y = st.selectbox("Eje Y (numérico):", numeric_cols, key="vis_y_violin")
 
+        data_plot = df.copy()
+        if ordenar_por_media and x in cat_cols:
+            orden = data_plot.groupby(x)[y].mean().sort_values().index
+        else:
+            orden = None
+
+        sns.violinplot(data=data_plot, x=x, y=y, order=orden, ax=ax)
+        if rotar_labels:
+            ax.set_xticklabels(ax.get_xticklabels(), rotation=90)
+        st.markdown("🧠 **Interpretación:** El violinplot combina boxplot y densidad, mostrando la forma completa de la distribución.")
+
+    # --------------------------------------------------
+    # 🌡️ HEATMAP
+    # --------------------------------------------------
+    elif tipo == "Heatmap":
+        corr = df.corr(numeric_only=True)
+        sns.heatmap(corr, annot=True, cmap="coolwarm", center=0, linewidths=0.5, ax=ax)
+        plt.xticks(rotation=45, ha="right")
+        plt.yticks(rotation=0)
+        st.markdown("🧠 **Interpretación:** El mapa de calor muestra relaciones entre variables numéricas. Tonos rojos indican correlaciones positivas, azules negativas.")
+
+    # --------------------------------------------------
+    # 📊 HISTOGRAMA
+    # --------------------------------------------------
+    elif tipo == "Histograma":
+        col = st.selectbox("Selecciona columna numérica:", numeric_cols, key="vis_hist_col")
+        bins = st.slider("Número de intervalos (bins):", 5, 100, 20)
+        kde = st.checkbox("Mostrar curva de densidad (KDE)", value=True)
+
+        sns.histplot(df[col], bins=bins, kde=kde, color="steelblue", ax=ax)
+        ax.set_title(f"Distribución de {col}", fontsize=12)
+        ax.set_xlabel(col)
+        ax.set_ylabel("Frecuencia")
+
+        st.markdown("🧠 **Interpretación:** El histograma muestra la frecuencia de los valores. Permite identificar concentración, sesgo y posibles outliers en los datos.")
+
+    # --------------------------------------------------
+    # MOSTRAR RESULTADO FINAL
+    # --------------------------------------------------
     st.pyplot(fig)
+
+def mostrar_analisis_gerencial(df):
+    """
+    Genera tres gráficos automáticos (ventas por categoría, evolución mensual y correlaciones)
+    junto con una interpretación automática orientada a la gerencia.
+    """
+
+    st.subheader("📊 Análisis automático e interpretación gerencial")
+    st.markdown("Este panel resume hallazgos clave del comportamiento de ventas del Minimarket Aurelion durante 2024.")
+
+    # Validaciones iniciales
+    if df.empty or "importe_total" not in df.columns:
+        st.warning("⚠️ No hay datos válidos para generar el análisis.")
+        return
+
+    # ===============================
+    # 1️⃣ VENTAS POR CATEGORÍA
+    # ===============================
+    st.markdown("### 🏷️ Ventas totales por categoría")
+
+    if "categoria" in df.columns:
+        ventas_cat = df.groupby("categoria")["importe_total"].sum().sort_values(ascending=False)
+        fig1, ax1 = plt.subplots(figsize=(8, 4))
+        sns.barplot(x=ventas_cat.values, y=ventas_cat.index, palette="viridis", ax=ax1)
+        ax1.set_title("Ventas por Categoría")
+        ax1.set_xlabel("Importe total")
+        st.pyplot(fig1)
+
+        top_cat = ventas_cat.idxmax()
+        top_val = ventas_cat.max()
+        bottom_cat = ventas_cat.idxmin()
+        bottom_val = ventas_cat.min()
+    else:
+        top_cat = bottom_cat = top_val = bottom_val = None
+
+    # ===============================
+    # 2️⃣ EVOLUCIÓN MENSUAL DE VENTAS
+    # ===============================
+    st.markdown("### 📆 Evolución mensual de ventas (2024)")
+
+    if {"mes", "importe_total"}.issubset(df.columns):
+        ventas_mes = df.groupby("mes")["importe_total"].sum().sort_index()
+        fig2, ax2 = plt.subplots(figsize=(8, 4))
+        sns.lineplot(x=ventas_mes.index, y=ventas_mes.values, marker="o", color="teal", ax=ax2)
+        ax2.set_title("Evolución mensual de ventas")
+        ax2.set_xlabel("Mes")
+        ax2.set_ylabel("Importe total")
+        st.pyplot(fig2)
+    else:
+        st.info("No hay información temporal disponible para graficar la evolución mensual.")
+
+    # ===============================
+    # 3️⃣ CORRELACIÓN ENTRE VARIABLES
+    # ===============================
+    st.markdown("### 🔗 Correlaciones principales")
+
+    numeric_cols = df.select_dtypes(include=[np.number])
+    if len(numeric_cols.columns) >= 3:
+        corr = numeric_cols.corr(numeric_only=True)
+        fig3, ax3 = plt.subplots(figsize=(8, 5))
+        sns.heatmap(corr, cmap="coolwarm", center=0, annot=False, ax=ax3)
+        ax3.set_title("Matriz de correlaciones")
+        st.pyplot(fig3)
+    else:
+        st.info("No hay suficientes variables numéricas para mostrar correlaciones.")
+
+    # ===============================
+    # 4️⃣ INTERPRETACIÓN AUTOMÁTICA
+    # ===============================
+    st.markdown("### 🧠 Interpretación gerencial automática")
+
+    interpretaciones = []
+
+    # a. Categorías dominantes
+    if top_cat and bottom_cat:
+        interpretaciones.append(
+            f"La categoría **{top_cat}** concentra el mayor volumen de ventas "
+            f"({top_val:,.0f} unidades monetarias), mientras que **{bottom_cat}** "
+            f"presenta el menor desempeño ({bottom_val:,.0f})."
+        )
+
+    # b. Estacionalidad o crecimiento
+    if "mes" in df.columns:
+        mes_max = df.groupby("mes")["importe_total"].sum().idxmax()
+        mes_min = df.groupby("mes")["importe_total"].sum().idxmin()
+        interpretaciones.append(
+            f"El mes con mayores ventas fue **{mes_max}**, mientras que el más bajo fue **{mes_min}**. "
+            "Esto sugiere una estacionalidad en la demanda que puede aprovecharse para promociones o control de stock."
+        )
+
+    # c. Productos con baja rotación
+    if "baja_rotacion" in df.columns:
+        bajos = df[df["baja_rotacion"] == True]["nombre_producto"].nunique()
+        total_prod = df["nombre_producto"].nunique()
+        ratio = (bajos / total_prod) * 100 if total_prod else 0
+        interpretaciones.append(
+            f"Se detectaron **{bajos} productos ({ratio:.1f}% del total)** con baja rotación. "
+            "Se recomienda revisar su demanda y considerar estrategias de liquidación o sustitución."
+        )
+
+    # d. Recomendaciones finales
+    interpretaciones.append(
+        "En general, se sugiere **ajustar el inventario mensual** en función de la estacionalidad "
+        "y **enfocar promociones en las categorías de menor participación** para mejorar el equilibrio de ventas."
+    )
+
+    # Mostrar interpretaciones
+    for texto in interpretaciones:
+        st.markdown(f"🟣 {texto}")
+
+    # ===============================
+    # 5️⃣ CONCLUSIÓN GLOBAL
+    # ===============================
+    st.divider()
+    st.markdown("#### 💡 Conclusión general")
+    st.info(
+        "El análisis muestra una estructura de ventas concentrada en pocas categorías con "
+        "potencial de optimización. Se recomienda mantener seguimiento mensual, identificar "
+        "clientes de alto valor y ajustar precios en productos de baja rotación para maximizar la rentabilidad."
+    )
 
 
 # ============================================================
@@ -241,7 +421,8 @@ def mostrar_estadisticas(datasets):
         "Medidas de posición",
         "Correlaciones",
         "Confiabilidad",
-        "Visualizaciones"
+        "Visualizaciones",
+        "📊 Análisis automático\n\ninterpretación gerencial"
     ])
 
     with tabs[0]:
@@ -254,3 +435,5 @@ def mostrar_estadisticas(datasets):
         mostrar_confiabilidad(df)
     with tabs[4]:
         mostrar_visualizaciones(df)
+    with tabs[5]:
+        mostrar_analisis_gerencial(df)
