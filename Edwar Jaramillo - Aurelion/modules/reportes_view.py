@@ -378,9 +378,9 @@ def mostrar_analisis_gerencial(maestra):
     st.divider()
 
     # ======================================================
-    # 3️⃣ CONCLUSIONES AUTOMÁTICAS Y RECOMENDACIONES
+    # 3️⃣ CONCLUSIONES Y RECOMENDACIONES
     # ======================================================
-    st.markdown("### 💡 Conclusiones y recomendaciones automáticas")
+    st.markdown("### 💡 Conclusiones y recomendaciones")
 
     total_ventas = maestra["importe_total"].sum()
     total_baja = maestra.get("baja_rotacion", pd.Series([False]*len(maestra))).sum()
@@ -394,7 +394,6 @@ def mostrar_analisis_gerencial(maestra):
         .head(3)
     )
 
-    # === Mantener tus conclusiones originales ===
     interpretacion = [
         f"📈 El volumen total de ventas asciende a **${total_ventas:,.0f}**, con mayor contribución de las categorías: "
         + ", ".join(principales_cats.index.tolist()) + ".",

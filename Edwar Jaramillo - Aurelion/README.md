@@ -641,6 +641,32 @@ Después de crear la tabla maestra, ahora tendrás automáticamente columnas com
 id_venta | id_cliente | nombre_cliente | nombre_producto | categoria | cantidad | precio_unitario | importe_total | año | mes | mes_texto | trimestre | total_cliente | participacion_cliente_% | total_categoria | participacion_categoria_% | total_producto | ticket_venta
 
 
+# 5. Conclusiones
+
+### 📊 Análisis Gerencial Avanzado e Interactivo
+* 📁 Datos filtrados: 343 registros · 95 productos · 8 categorías
+
+#### 🏷️ Ventas por categoría y mes
+
+![Evolución mensual de ventas por categoría](sources/images/sprint2-evolucion-categorias-mes.png)
+
+🧠 **Insight**: El mes con **mayores ventas totales fue 2024-05**, destacando las categorías líderes del período.
+
+#### 🧾 Productos con baja rotación y evolución de ventas
+
+![Evolución mensual de ventas por categoría](sources/images/sprint2-evolucion-mensual-ventas-productos-baja-rotacion.png)
+
+🧠 **Insight**: Se identificaron **34 productos de baja rotación**. Analiza estrategias de promoción o sustitución para los menos vendidos.
+
+
+### 💡 Conclusiones y recomendaciones automáticas
+* 📈 El volumen total de ventas asciende a **$2,651,417**, con mayor contribución de las **categorías: Bebidas, Limpieza, Snacks y Dulces**.
+
+* 📉 Se identificó un **91.6% de productos con baja rotación**. **Se recomienda reforzar campañas de promoción o revisar precios**.
+
+* 🕒 Las ventas muestran una tendencia mensual estable, con picos en algunos períodos estacionales. **Ajustar stock e inventarios según el comportamiento histórico**.
+
+* 💰 **Priorizar productos líderes y optimizar el catálogo de baja rotación** puede incrementar la rentabilidad general del minimarket.
 
 ___
 # Información del autor del proyecto
