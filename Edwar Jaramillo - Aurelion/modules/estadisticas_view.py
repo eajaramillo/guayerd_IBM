@@ -379,6 +379,125 @@ def mostrar_analisis_gerencial(df):
         "clientes de alto valor y ajustar precios en productos de baja rotación para maximizar la rentabilidad."
     )
 
+def mostrar_rentabilidad_productos(df):
+    """
+    Analiza la rentabilidad, margen y ROI por producto,
+    permitiendo ajustar manualmente el porcentaje de margen
+    y aplicar filtros por categoría y mes si están disponibles.
+    """
+    st.subheader("💰 Rentabilidad y ROI por producto")
+
+    if df.empty or "precio_unitario" not in df.columns or "cantidad" not in df.columns:
+        st.warning("⚠️ No se encontraron columnas 'precio_unitario' o 'cantidad' para calcular rentabilidad.")
+        return
+
+    df = df.copy()
+
+    # --------------------------------------------------------
+    # 1️⃣ Filtros dinámicos de categoría y mes
+    # --------------------------------------------------------
+    st.markdown("### 🎚️ Filtros de análisis")
+
+    col1, col2 = st.columns(2)
+    filtro_categoria, filtro_mes = None, None
+
+    if "categoria" in df.columns:
+        categorias = sorted(df["categoria"].dropna().unique().tolist())
+        filtro_categoria = col1.multiselect("Filtrar por categoría:", ["(Todas)"] + categorias, default="(Todas)")
+
+    if "mes" in df.columns:
+        meses = sorted(df["mes"].dropna().unique().tolist())
+        filtro_mes = col2.multiselect("Filtrar por mes:", ["(Todos)"] + list(map(str, meses)), default="(Todos)")
+
+    # Aplicar filtros
+    if filtro_categoria and "(Todas)" not in filtro_categoria:
+        df = df[df["categoria"].isin(filtro_categoria)]
+    if filtro_mes and "(Todos)" not in filtro_mes:
+        df = df[df["mes"].astype(str).isin(filtro_mes)]
+
+    if df.empty:
+        st.warning("⚠️ No hay datos después de aplicar los filtros seleccionados.")
+        return
+
+    # --------------------------------------------------------
+    # 2️⃣ Margen editable
+    # --------------------------------------------------------
+    st.markdown("### ⚙️ Configuración de margen de ganancia")
+    margen_input = st.number_input(
+        "Margen de ganancia (%)",
+        min_value=0.0,
+        max_value=100.0,
+        value=30.0,
+        step=1.0,
+        help="Porcentaje de margen sobre el precio unitario (por defecto 30 %)."
+    )
+    margen_factor = (100 - margen_input) / 100  # Ejemplo: 30 % → costo = 0.7 * precio
+
+    # --------------------------------------------------------
+    # 3️⃣ Cálculos de rentabilidad
+    # --------------------------------------------------------
+    df["costo_unitario"] = df["precio_unitario"] * margen_factor
+    df["ganancia_unitaria"] = df["precio_unitario"] - df["costo_unitario"]
+    df["ganancia_total"] = df["ganancia_unitaria"] * df["cantidad"]
+    df["margen_%"] = (df["ganancia_unitaria"] / df["precio_unitario"]) * 100
+    df["ROI_%"] = (df["ganancia_total"] / (df["costo_unitario"] * df["cantidad"])) * 100
+
+    # --------------------------------------------------------
+    # 4️⃣ Agrupación por producto
+    # --------------------------------------------------------
+    rentabilidad = (
+        df.groupby("nombre_producto")
+        .agg({
+            "categoria": "first" if "categoria" in df.columns else lambda x: None,
+            "cantidad": "sum",
+            "importe_total": "sum",
+            "ganancia_total": "sum",
+            "margen_%": "mean",
+            "ROI_%": "mean"
+        })
+        .sort_values("ganancia_total", ascending=False)
+        .reset_index()
+    )
+
+    st.markdown("### 🧾 Tabla resumen de rentabilidad por producto")
+    st.dataframe(rentabilidad.head(20), use_container_width=True)
+
+    # --------------------------------------------------------
+    # 5️⃣ Gráficos de rentabilidad
+    # --------------------------------------------------------
+    top = rentabilidad.head(10)
+    bottom = rentabilidad.tail(10)
+
+    fig, ax = plt.subplots(1, 2, figsize=(14, 5))
+    sns.barplot(data=top, x="ganancia_total", y="nombre_producto", ax=ax[0], palette="Greens_r")
+    sns.barplot(data=bottom, x="ganancia_total", y="nombre_producto", ax=ax[1], palette="Reds_r")
+
+    ax[0].set_title("🔝 Productos más rentables")
+    ax[1].set_title("⚠️ Productos menos rentables")
+    for a in ax:
+        a.set_xlabel("Ganancia total ($)")
+        a.set_ylabel("")
+    st.pyplot(fig)
+
+    # --------------------------------------------------------
+    # 6️⃣ Métricas e interpretación automática
+    # --------------------------------------------------------
+    margen_prom = rentabilidad["margen_%"].mean()
+    roi_prom = rentabilidad["ROI_%"].mean()
+
+    st.markdown("### 🧠 Interpretación automática")
+    st.write(f"📈 **Margen promedio:** {margen_prom:.2f}%")
+    st.write(f"💹 **ROI promedio:** {roi_prom:.2f}%")
+
+    if roi_prom > 40:
+        st.success("Excelente nivel de rentabilidad general. El mix de productos genera retornos altos sobre la inversión.")
+    elif roi_prom > 20:
+        st.info("Buen desempeño general, aunque algunos productos podrían optimizar precios o costos.")
+    else:
+        st.warning("Rentabilidad baja: se recomienda revisar estructura de costos o estrategias de precios.")
+
+    st.caption("🔄 Los resultados se actualizan automáticamente al cambiar filtros o margen de ganancia.")
+
 
 # ============================================================
 # FUNCIÓN PRINCIPAL
@@ -422,7 +541,8 @@ def mostrar_estadisticas(datasets):
         "Correlaciones",
         "Confiabilidad",
         "Visualizaciones",
-        "📊 Análisis automático\n\ninterpretación gerencial"
+        "📊 Análisis automático\n\ninterpretación gerencial",
+        "💰 Rentabilidad y ROI"
     ])
 
     with tabs[0]:
@@ -437,3 +557,5 @@ def mostrar_estadisticas(datasets):
         mostrar_visualizaciones(df)
     with tabs[5]:
         mostrar_analisis_gerencial(df)
+    with tabs[6]:
+        mostrar_rentabilidad_productos(df)
