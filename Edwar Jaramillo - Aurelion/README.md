@@ -640,6 +640,7 @@ Cada gráfico incluye un insight contextual generado automáticamente
 Después de crear la tabla maestra, ahora tendrás automáticamente columnas como:
 id_venta | id_cliente | nombre_cliente | nombre_producto | categoria | cantidad | precio_unitario | importe_total | año | mes | mes_texto | trimestre | total_cliente | participacion_cliente_% | total_categoria | participacion_categoria_% | total_producto | ticket_venta
 
+___
 
 # 5. Conclusiones
 
@@ -668,6 +669,18 @@ id_venta | id_cliente | nombre_cliente | nombre_producto | categoria | cantidad 
 
 * 💰 **Priorizar productos líderes y optimizar el catálogo de baja rotación** puede incrementar la rentabilidad general del minimarket.
 
+___
+
+# 6. Machine Learning
+
+Clasificación de productos según su rotación (alta o baja), usando Scikit-learn.
+
+**Este módulo incluirá:**
+* Selección automática de variables.
+* Entrenamiento del modelo.
+* Visualización de resultados y métricas (precisión, matriz de confusión, reporte de clasificación).
+
+---
 ___
 # Información del autor del proyecto
 

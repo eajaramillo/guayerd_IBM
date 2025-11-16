@@ -1,5 +1,6 @@
 import streamlit as st
-from modules import documentacion_view, minimarket_view, limpieza_view, estadisticas_view, reportes_view
+from modules import documentacion_view, minimarket_view, limpieza_view, estadisticas_view, reportes_view, machine_learning_view as ml_view
+
 
 st.set_page_config(page_title="Mi Minimarket - Aurelion", layout="wide")
 
@@ -12,7 +13,8 @@ menu = st.sidebar.radio(
         "📘 Documentación",
         "🧹 Limpieza y transformación",
         "📈 Análisis estadístico y visualización",
-        "📊 Reportes gerenciales y KPIs"
+        "📊 Reportes gerenciales y KPIs",
+        "Machine Learning"
     )
 )
 
@@ -37,3 +39,5 @@ elif menu == "📊 Reportes gerenciales y KPIs":
         reportes_view.mostrar_reportes(st.session_state["datasets"])
     else:
         st.warning(mensaje_error_dataset)
+elif menu == "Machine Learning":
+    ml_view.mostrar_machine_learning_view(st.session_state["datasets"])
