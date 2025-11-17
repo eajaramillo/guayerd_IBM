@@ -3,6 +3,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
+import plotly.graph_objects as go
 from modules.utils.data_master import construir_tabla_maestra
 
 sns.set(style="whitegrid")
@@ -379,13 +380,230 @@ def mostrar_analisis_gerencial(df):
         "clientes de alto valor y ajustar precios en productos de baja rotación para maximizar la rentabilidad."
     )
 
+
+def mostrar_pareto_utilidad(df):
+    """
+    Analiza utilidad estimada y cantidad vendida por categoría o producto.
+    Incluye filtros internos y dos modos de porcentaje (acumulado / sobre ventas totales).
+    """
+
+    st.subheader("📊 Pareto de utilidad y cantidad vendida")
+
+    if df.empty or not {"precio_unitario", "cantidad"}.issubset(df.columns):
+        st.warning("⚠️ No se encontraron columnas 'precio_unitario' o 'cantidad' necesarias para el análisis.")
+        return
+
+    df = df.copy()
+
+    # ==========================================================
+    # 1️⃣ FILTROS INTERNOS DE ANÁLISIS
+    # ==========================================================
+    st.markdown("### 🎚️ Filtros de análisis")
+
+    col1, col2, col3 = st.columns(3)
+
+    # --- Filtro por año ---
+    if "año" in df.columns:
+        años = sorted(df["año"].dropna().unique().tolist())
+        filtro_año = col1.multiselect(
+            "Filtrar por año:",
+            ["(Todos)"] + años,
+            default="(Todos)",
+            key="pareto_filtro_año"
+        )
+        if "(Todos)" not in filtro_año:
+            df = df[df["año"].isin(filtro_año)]
+
+    # --- Filtro por mes ---
+    if "mes" in df.columns:
+        meses = sorted(df["mes"].dropna().unique().tolist())
+        filtro_mes = col2.multiselect(
+            "Filtrar por mes:",
+            ["(Todos)"] + list(map(str, meses)),
+            default="(Todos)",
+            key="pareto_filtro_mes"
+        )
+        if "(Todos)" not in filtro_mes:
+            df = df[df["mes"].astype(str).isin(filtro_mes)]
+
+    # --- Filtro por categoría ---
+    if "categoria" in df.columns:
+        categorias = sorted(df["categoria"].dropna().unique().tolist())
+        filtro_cat = col3.multiselect(
+            "Filtrar por categoría:",
+            ["(Todas)"] + categorias,
+            default="(Todas)",
+            key="pareto_filtro_categoria"
+        )
+        if "(Todas)" not in filtro_cat:
+            df = df[df["categoria"].isin(filtro_cat)]
+
+    if df.empty:
+        st.warning("⚠️ No hay datos después de aplicar los filtros seleccionados.")
+        return
+
+    st.divider()
+
+    # ==========================================================
+    # 2️⃣ CONFIGURACIONES DEL ANÁLISIS
+    # ==========================================================
+    colA, colB = st.columns(2)
+
+    nivel = colA.radio(
+        "Nivel de análisis:",
+        ["Por categoría", "Por producto"],
+        horizontal=True,
+        key="pareto_nivel"
+    )
+
+    modo_porcentaje = colB.radio(
+        "Modo de porcentaje:",
+        ["% acumulado (Pareto clásico)", "% sobre ventas totales"],
+        horizontal=True,
+        key="pareto_modo"
+    )
+
+    # ==========================================================
+    # 3️⃣ CÁLCULOS DE UTILIDAD E INGRESO
+    # ==========================================================
+    df["ingreso"] = df["precio_unitario"] * df["cantidad"]
+
+    # Márgenes promedio estimados según categoría
+    margenes = {
+        "Alimentos": 0.05,
+        "Bebidas": 0.18,
+        "Bebidas alcohólicas": 0.12,
+        "Limpieza": 0.20,
+        "Lácteos": 0.10,
+        "Panadería": 0.15,
+        "Cuidado personal": 0.15,
+        "Dulces": 0.15,
+        "Snacks y Dulces": 0.15,
+        "Granos y Cereales": 0.05,
+        "Verduras": 0.05
+    }
+
+    def utilidad_estim(row):
+        categoria = str(row.get("categoria", "Otros")).strip()
+        margen = margenes.get(categoria, 0.10)  # margen default 10%
+        return row["ingreso"] * margen
+
+    df["utilidad_estimada"] = df.apply(utilidad_estim, axis=1)
+
+    # ==========================================================
+    # 4️⃣ AGRUPAR SEGÚN NIVEL DE ANÁLISIS
+    # ==========================================================
+    if nivel == "Por categoría" and "categoria" in df.columns:
+        agrupado = (
+            df.groupby("categoria")
+            .agg({
+                "cantidad": "sum",
+                "ingreso": "sum",
+                "utilidad_estimada": "sum"
+            })
+            .sort_values("utilidad_estimada", ascending=False)
+            .reset_index()
+        )
+        nombre_col = "categoria"
+    else:
+        agrupado = (
+            df.groupby("nombre_producto")
+            .agg({
+                "cantidad": "sum",
+                "ingreso": "sum",
+                "utilidad_estimada": "sum"
+            })
+            .sort_values("utilidad_estimada", ascending=False)
+            .reset_index()
+        )
+        nombre_col = "nombre_producto"
+
+    # ==========================================================
+    # 5️⃣ CÁLCULO DE PORCENTAJES SEGÚN EL MODO
+    # ==========================================================
+    if modo_porcentaje == "% acumulado (Pareto clásico)":
+        agrupado["%"] = (agrupado["utilidad_estimada"].cumsum() / agrupado["utilidad_estimada"].sum()) * 100
+    else:
+        total_ventas = agrupado["ingreso"].sum()
+        agrupado["%"] = (agrupado["utilidad_estimada"] / total_ventas) * 100
+
+    agrupado.rename(
+        columns={
+            "%": "% Acumulado" if modo_porcentaje.startswith("% acumulado") else "% sobre ventas"
+        },
+        inplace=True
+    )
+
+    # ==========================================================
+    # 6️⃣ GRÁFICO PARETO INTERACTIVO
+    # ==========================================================
+    fig = go.Figure()
+
+    # Barras de utilidad
+    fig.add_trace(go.Bar(
+        x=agrupado[nombre_col],
+        y=agrupado["utilidad_estimada"],
+        name="Utilidad estimada ($)",
+        marker_color="royalblue",
+        yaxis="y1"
+    ))
+
+    # Línea de porcentaje
+    col_pct = agrupado.columns[-1]
+    fig.add_trace(go.Scatter(
+        x=agrupado[nombre_col],
+        y=agrupado[col_pct],
+        name=col_pct,
+        mode="lines+markers",
+        marker=dict(color="darkorange"),
+        yaxis="y2"
+    ))
+
+    fig.update_layout(
+        title=f"📈 Gráfico Pareto - {nivel} ({col_pct})",
+        xaxis=dict(title=nombre_col.capitalize(), tickangle=45),
+        yaxis=dict(title="Utilidad estimada ($)"),
+        yaxis2=dict(
+            title=col_pct,
+            overlaying="y",
+            side="right",
+            range=[0, 110 if 'acumulado' in col_pct.lower() else max(agrupado[col_pct]) * 1.2]
+        ),
+        legend=dict(orientation="h", yanchor="bottom", y=-0.3, xanchor="center", x=0.5),
+        height=600,
+        template="plotly_white"
+    )
+
+    st.plotly_chart(fig, use_container_width=True)
+
+    # ==========================================================
+    # 7️⃣ TABLA RESUMEN E INSIGHT AUTOMÁTICO
+    # ==========================================================
+    st.markdown("### 📋 Resumen de utilidades")
+    st.dataframe(agrupado.head(20), use_container_width=True)
+
+    top_item = agrupado.iloc[0, 0]
+    top_util = agrupado["utilidad_estimada"].iloc[0]
+    pct = agrupado.iloc[0, -1]
+
+    st.markdown(
+        f"💡 **Insight:** El elemento **{top_item}** concentra la mayor utilidad estimada "
+        f"(${top_util:,.0f}), representando el **{pct:.1f}%** {col_pct.lower()}."
+    )
+
+    st.caption(
+        "🔍 Este gráfico permite visualizar cómo pocas categorías o productos concentran la mayoría de la utilidad total "
+        "(principio de Pareto 80/20), o qué porcentaje representa cada uno sobre el total de ventas."
+    )
+
+
 def mostrar_rentabilidad_productos(df):
     """
     Analiza la rentabilidad, margen y ROI por producto,
     permitiendo ajustar manualmente el porcentaje de margen
     y aplicar filtros por categoría y mes si están disponibles.
     """
-    st.subheader("💰 Rentabilidad y ROI por producto")
+    st.subheader("💰 Utilidad y ROI por producto")
 
     if df.empty or "precio_unitario" not in df.columns or "cantidad" not in df.columns:
         st.warning("⚠️ No se encontraron columnas 'precio_unitario' o 'cantidad' para calcular rentabilidad.")
@@ -434,7 +652,7 @@ def mostrar_rentabilidad_productos(df):
     margen_factor = (100 - margen_input) / 100  # Ejemplo: 30 % → costo = 0.7 * precio
 
     # --------------------------------------------------------
-    # 3️⃣ Cálculos de rentabilidad
+    # 3️⃣ Cálculos de utilidad
     # --------------------------------------------------------
     df["costo_unitario"] = df["precio_unitario"] * margen_factor
     df["ganancia_unitaria"] = df["precio_unitario"] - df["costo_unitario"]
@@ -459,7 +677,7 @@ def mostrar_rentabilidad_productos(df):
         .reset_index()
     )
 
-    st.markdown("### 🧾 Tabla resumen de rentabilidad por producto")
+    st.markdown("### 🧾 Tabla resumen de utilidad por producto")
     st.dataframe(rentabilidad.head(20), use_container_width=True)
 
     # --------------------------------------------------------
@@ -542,7 +760,8 @@ def mostrar_estadisticas(datasets):
         "Confiabilidad",
         "Visualizaciones",
         "📊 Análisis automático\n\ninterpretación gerencial",
-        "💰 Rentabilidad y ROI"
+        "💰 Utilidad y ROI",
+        "📈 Pareto de utilidad"
     ])
 
     with tabs[0]:
@@ -559,3 +778,5 @@ def mostrar_estadisticas(datasets):
         mostrar_analisis_gerencial(df)
     with tabs[6]:
         mostrar_rentabilidad_productos(df)
+    with tabs[7]:
+        mostrar_pareto_utilidad(df)

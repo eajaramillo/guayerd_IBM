@@ -260,7 +260,8 @@ def revisar_categorias_productos(datasets):
     # ===============================================================
     st.markdown("### 🧠 Reglas automáticas de recategorización")
     reglas_default = {
-        "Jugo|Bebida|Agua|Refresco|Gaseosa|Té|Energética|Mate|Pepsi|Cerveza|Avena|Vino|Ron|Whisky|Fernet|Cola|Sprite|Licor|Vodka": "Bebidas",
+        "Licor|Vodka|Ron|Vino|Whisky|Fernet":"Bebidas alcoholicas",
+        "Jugo|Bebida|Agua|Refresco|Gaseosa|Té|Energética|Mate|Pepsi|Cerveza|Avena|Cola|Sprite": "Bebidas",
         "Manzana|Banano|Naranja|Pera|Uva": "Bebidas",
         "Pan|Ponqué|Bizcocho|Panela|Mermelada|Manteca": "Panadería",
         "Yogur|Leche|Queso|Mantequilla": "Lácteos",
