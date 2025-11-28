@@ -671,7 +671,7 @@ ___
 
 ___
 
-# 6. Machine Learning
+# 6. Machine Learning - Ejercicio
 
 Clasificación de productos según su rotación (alta o baja), usando Scikit-learn.
 
@@ -681,6 +681,18 @@ Clasificación de productos según su rotación (alta o baja), usando Scikit-lea
 * Visualización de resultados y métricas (precisión, matriz de confusión, reporte de clasificación).
 
 ---
+
+# 7. Machine Learning Aurelion
+
+* Predecir cantidades de venta por producto.
+* Predecir cantidades de venta por categoría.
+* Comparar el rendimiento entre:
+    * KNeighborsRegressor
+    * RandomForestRegressor
+* Usar división 70% entrenamiento / 30% prueba.
+* Incluir una opción para ampliar el dataset, generando registros sintéticos (simulados) de ventas adicionales.
+
+
 ___
 # Información del autor del proyecto
 
@@ -691,6 +703,7 @@ ___
 **Recursos de markdows útiles**
 Markdown: [Sintaxis de escritura y formato básicos](https://docs.github.com/es/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
 Iconos: [Complete list of github markdown emoji markup](https://gist.github.com/rxaviers/7360908)
+[scikit-learn](https://scikit-learn.org/stable/)
 
 ```
 (Versión README para Github)
